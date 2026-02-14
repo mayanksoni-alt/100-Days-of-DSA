@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int r, c;
+    scanf("%d %d", &r, &c);
+
+    if (r != c) {
+        printf("Not a Symmetric Matrix");
+        return 0;
+    }
+
+    int **matrix = (int**)malloc(r * sizeof(int*));
+    for (int i = 0; i < r; i++) {
+        matrix[i] = (int*)malloc(c * sizeof(int));
+    }
+
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            scanf("%d", &matrix[i][j]);
+        }
+    }
+
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            if (matrix[i][j] != matrix[j][i]) {
+                printf("Not a Symmetric Matrix");
+
+                for (int k = 0; k < r; k++) {
+                    free(matrix[k]);
+                }
+                free(matrix);
+
+                return 0;
+            }
+        }
+    }
+
+    printf("Symmetric Matrix");
+
+    for (int i = 0; i < r; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+
+    return 0;
+}
