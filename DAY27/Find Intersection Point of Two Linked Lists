@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+void append(struct Node** head, int data) {
+    struct Node* newNode = createNode(data);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    struct Node* temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+int getLength(struct Node* head) {
+    int len = 0;
+    while (head != NULL) {
+        len++;
+        head = head->next;
+    }
+    return len;
+}
+
+struct Node* getIntersection(struct Node* head1, struct Node* head2) {
+    int len1 = getLength(head1);
+    int len2 = getLength(head2);
+
+    int diff = abs(len1 - len2);
+
+    struct Node* p1 = head1;
+    struct Node* p2 = head2;
+
+    if (len1 > len2) {
+        for (int i = 0; i < diff; i++) p1 = p1->next;
+    } else {
+        for (int i = 0; i < diff; i++) p2 = p2->next;
+    }
+
+    while (p1 != NULL && p2 != NULL) {
+        if (p1 == p2) return p1;
+        p1 = p1->next;
+        p2 = p2->next;
+    }
+
+    return NULL;
+}
+
+int main() {
+    int n, m, x;
+    scanf("%d", &n);
+
+    struct Node* head1 = NULL;
+    struct Node* head2 = NULL;
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &x);
+        append(&head1, x);
+    }
+
+    scanf("%d", &m);
+
+    for (int i = 0; i < m; i++) {
+        scanf("%d", &x);
+        append(&head2, x);
+    }
+
+    struct Node* temp1 = head1;
+    struct Node* temp2 = head2;
+
+    while (temp1 != NULL) {
+        temp2 = head2;
+        while (temp2 != NULL) {
+            if (temp1->data == temp2->data) {
+                struct Node* t = temp2;
+                struct Node* tail1 = temp1;
+                while (tail1->next != NULL) tail1 = tail1->next;
+                tail1->next = t;
+                break;
+            }
+            temp2 = temp2->next;
+        }
+        if (temp2 != NULL) break;
+        temp1 = temp1->next;
+    }
+
+    struct Node* intersection = getIntersection(head1, head2);
+
+    if (intersection == NULL)
+        printf("No Intersection\n");
+    else
+        printf("%d\n", intersection->data);
+
+    return 0;
+}
